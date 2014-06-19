@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Programming | Jacob's Programming Explosions]]></title>
+  <link href="http://jbarrieault.github.io/blog/categories/programming/atom.xml" rel="self"/>
+  <link href="http://jbarrieault.github.io/"/>
+  <updated>2014-06-19T02:06:40-04:00</updated>
+  <id>http://jbarrieault.github.io/</id>
+  <author>
+    <name><![CDATA[Jacob Barrieault]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Expressive, Not Impressive]]></title>
+    <link href="http://jbarrieault.github.io/blog/2014/06/19/expressive/"/>
+    <updated>2014-06-19T01:05:31-04:00</updated>
+    <id>http://jbarrieault.github.io/blog/2014/06/19/expressive</id>
+    <content type="html"><![CDATA[<p>I don&rsquo;t know if you&rsquo;ve heard, but there is a terrible rumor about programming going around. If you haven&rsquo;t heard it yet, you will soon. It&rsquo;s really making the rounds. And when you hear it, you&rsquo;ll be tempted to believe it and spread it yourself. But please, don&rsquo;t fall for it. You&rsquo;re better than that. I&rsquo;m going to tell you the rumor, because I think you can handle it. But again, don&rsquo;t buy in.
+Ready? Okay then, here it is:</p>
+
+<blockquote><p>&ldquo;Programmers write code for computers.&rdquo;</p></blockquote>
+
+<p>Pretty awful, isn&rsquo;t it? I mean, this is a real atrocity! No? You don&rsquo;t think so? I think I know what you are thinking. On the surface it seems to be true and completely sensible. After all, the whole reason programming languages were invented was so we would have a way to tell computers to do stuff. You know, speak to them in a way they can understand. Be that as it may, programmers are <strong>not</strong>, I repeat <strong>not</strong> people who write code for computers. In actuality, <strong>Programmers are people who create programs</strong>. Think I am being overly dogmatic? Well I&rsquo;m not. The difference is not a matter of mere semantics, but of an underlying understanding of what your goal as a developer really is. The side of this divide you fall on will dictate a great deal about the programs you create and the code you write to create them.</p>
+
+<p>When writing code (as a programmer, developer, software engineer, or whatever you want to call yourself), it is very important for your computer, and other computers, to understands it. Yes, for sure. However, it is <em>even more</em> important for <em>people</em> to understand it. I&rsquo;m seriously not making this up. Just look at this quote from the renowned <a href="http://en.wikipedia.org/wiki/Hal_Abelson" target="_blank">Hal Ableson</a>:</p>
+
+<blockquote><p>&ldquo;Programs must be written for people to read, and only incidentally for machines to execute.&rdquo;</p></blockquote>
+
+<p>Hopefully you believe me now that I pulled Ableson gun out. But you might still be wondering what this really means or has to do with the code you write. It&rsquo;s about writing expressive code. What is expressive code? Take a guess. It&rsquo;s code&hellip;that&hellip;is expressive. Yep, that&rsquo;s it. Expressive code is just code that is intentionally written to be easily understood by humans. I like to write in Ruby, which is a very expressive language. It is lacking in curly braces, semicolons, and boilerplate code other languages are known for. But just because Ruby is expressive and I write in Ruby does not mean I am writing expressively. It just means I have a head start. Expressive code can be written in any language, because it an approach to writing and organizing code that transcends the mere syntax of the language you are currently constrained to obey.</p>
+
+<p>Let me explain what I mean. We tend to think computers are rigid in their requirements and that people just have to put up with whatever code it takes to make a program run or a test pass, no matter how ugly or confusing to look at it may be. I won&rsquo;t say this is completely untrue. There is a level of syntactic precision computers demand in order to work (because they are stupid and they don&rsquo;t know any better). But in a sense, it is computers that are flexible and people who are limited in what code or syntax they can understand. You can write a program, or even a simple method, nearly endless ways. Your computer doesn&rsquo;t have a preference on how you write the code, as long as it works. People on the other hand, we have preferences. And we do care how a program it written. We like being able to quickly look at a method and be able to see what it does. Writing code that keeps this in mind is what it means to write expressive code. I think we have reached example time.</p>
+
+<p>So let&rsquo;s look at some code. Say we have an array containing hashes representing bands:</p>
+
+<p><code>ruby
+[
+  {"The White Stripes" =&gt; {"The White Stripes" =&gt; "1999", "De Stijl" =&gt; "2000", "Elephant" =&gt; "2003", "Get behind Me Satan" =&gt; "2005", "Icky Thump" =&gt; "2007"} },
+  {"Fleet Foxes" =&gt; {"Fleet Foxes" =&gt; 2008, "Helplessness Blues" =&gt; 2011}},
+  {"Jonsi" =&gt; {"Go" =&gt; "2010"} }
+]
+</code></p>
+
+<p>Say we want to print every album name to the screen. You could write it like this:</p>
+
+<p>```ruby
+a = [</p>
+
+<pre><code>  {"The White Stripes" =&gt; {"1999" =&gt; "The White Stripes", "2000" =&gt; "De Stijl", "2003" =&gt; "Elephant", "2005" =&gt; "Get behind Me Satan", "2007" =&gt; "Icky Thump"}}, 
+  {"Fleet Foxes" =&gt; {"2008" =&gt; "Fleet Foxes", "2011" =&gt; "Helplessness Blues"}},
+  {"Jonsi" =&gt; {"2010" =&gt; "Go"}} 
+]
+</code></pre>
+
+<p>a.each do |v|
+  v.each do |w, x|</p>
+
+<pre><code>x.each do |y, z|
+  puts z
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>To the computer, this is completely valid code and will output the desired results, which would be:</p>
+
+<p>The White Stripes<br/>
+De Stijl<br/>
+Elephant<br/>
+Get behind Me Satan<br/>
+Icky Thump<br/>
+Fleet Foxes<br/>
+Helplessness Blues<br/>
+Go</p>
+
+<p>But how would you feel if you were tasked to update/fix/optimize some code and you ran into that cryptic mess we just saw? Worse yet, what if you lacked the luxury of seeing the definition of the array being iterated over at all? Effectively leaving you with the following:</p>
+
+<p>```ruby
+a.each do |v|
+  v.each do |w, x|</p>
+
+<pre><code>x.each do |y, z|
+  puts z
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>I would be completely in the dark if this was all I had to go on. All I would know from looking at the above code would be that some multi-dimentional collection was being iterated over and eventually an inner value is printed. This is nearly useless and will force me to stumbled around the source code files trying to figure out exactly what that collection is. And this is just a simple example. The more complex your objects and methods get, the more lost you and others will become when looking at your code.</p>
+
+<h2>Self Documenting Code (naming things)</h2>
+
+<p>So how could we write that procedure to be more expressive? There are a few important principles for writing expressive code. One of the most important ideas is called <a href="http://en.wikipedia.org/wiki/Self-documenting" target="_blank">self documenting code</a>. One key convention for self documenting code is giving variables meaningful and accurate names. Sound easy? Well actually, it can be pretty tough sometimes. You might be on a roll pumping out your code, not needing any help remembering what&rsquo;s what, and definitely not wanting to slow down just to think of what to name a variable. But it will come back to bite you and anyone who needs to work on the project if you don&rsquo;t take the extra set of seconds to come up with a decent name. Let&rsquo;s rewrite the previous example using simple, descriptive names for our variables:</p>
+
+<p>```ruby
+music_library = [</p>
+
+<pre><code>  {"The White Stripes" =&gt; {"1999" =&gt; "The White Stripes", "2000" =&gt; "De Stijl", "2003" =&gt; "Elephant", "2005" =&gt; "Get behind Me Satan", "2007" =&gt; "Icky Thump"}}, 
+  {"Fleet Foxes" =&gt; {"2008" =&gt; "Fleet Foxes", "2011" =&gt; "Helplessness Blues"}},
+  {"Jonsi" =&gt; {"2010" =&gt; "Go"}} 
+]
+</code></pre>
+
+<p>music_library.each do |band|
+  band.each do |name, albums|</p>
+
+<pre><code>albums.each do |year, album|
+  puts album
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>Wow! Now I can see what&rsquo;s going on! This is much more readable, and literally the only difference is the names of the variables. The computer doesn&rsquo;t care, but I sure do. I might not know exactly how music_library is structured if I don&rsquo;t know where it was defined, but at least I know that it is a music library. And in the first place, it was much easier to write the above code than the first version we looked at. I didn&rsquo;t have to keep track of the music list&rsquo;s structure in my head. One more thing, I should probably have wrapped that code into a method and given that a good name too.</p>
+
+<p>```ruby
+def library_albums(music_library)
+  music_library.each do |band|</p>
+
+<pre><code>band.each do |name, albums|
+  albums.each do |year, album|
+    puts album
+  end
+end
+</code></pre>
+
+<p>  end
+end
+```</p>
+
+<p>There we go. Everything makes sense now. That is an example of self documenting code. If you are like me, you look at this example and think, &ldquo;Yeah, I&rsquo;m gonna start making my code more readable. It&rsquo;ll be great.&rdquo; However, minutes later you will find yourself taking shortcuts, sacrificing clarity to save a line of code or two. Then you start making excuses for it, like, &ldquo;this is 3 lines shorter, so it must be more expressive.&rdquo; Or you might think about how impressed others will be when they see you chain six methods together on one line. And who doesn&rsquo;t want to be impressive? You don&rsquo;t, that&rsquo;s who.</p>
+
+<p>There&rsquo;s a really great talk called <a href="https://www.youtube.com/watch?v=0SARbwvhupQ" target="_blank">The Myth of the Genius Programmer</a> by a couple of guys from Google (Ben Collins-Sussman and Brian Fitzpatrick) in which they talk about some destructive habits programmers fall into in order to appear clever to their peers. The bottom line is that we like to look smart. The problem is that when we give our priority to making our code look smart over making our code easy to understand, we hinder our ability to collaborate with other developers. This hinders the project and our own continued growth. So always be on guard not to get carried away while refactoring your code. Refactor towards simplicity and clarity, not mere brevity. In other words, try to be <em>expressive</em>, not <em>impressive</em>.</p>
+
+<p>There are many other practices for writing expressive code that I have not gone into here, such as the <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle" target="_blank">Single Responsibility Principle</a>. I recommend <a href="https://robinwinslow.co.uk/2013/11/22/expressive-coding/" target="_blank">this blog post</a> on the subject of expressive code. His examples are in JavaScript. I found it a very helpful place to start.</p>
+
+<h1>tl;dr</h1>
+
+<p>Expressive code is code that is intentionally written to be easy for people to read and understand. One important aspect of expressive code is naming variables and methods descriptively and accurately. Remember, a program with the fewest (or most!) lines of code is not always the best. Don&rsquo;t try to make yourself look smart by making a program hard to read. Be expressive, not impressive.</p>
+]]></content>
+  </entry>
+  
+</feed>
