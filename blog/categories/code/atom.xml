@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Code, | Jacob's Programming Explosions]]></title>
+  <title><![CDATA[Category: Code | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/code/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-06-19T01:16:11-04:00</updated>
+  <updated>2014-06-19T02:06:40-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Expressive]]></title>
+    <title type="html"><![CDATA[Expressive, Not Impressive]]></title>
     <link href="http://jbarrieault.github.io/blog/2014/06/19/expressive/"/>
     <updated>2014-06-19T01:05:31-04:00</updated>
     <id>http://jbarrieault.github.io/blog/2014/06/19/expressive</id>
@@ -25,7 +25,7 @@ Ready? Okay then, here it is:</p>
 
 <p>Pretty awful, isn&rsquo;t it? I mean, this is a real atrocity! No? You don&rsquo;t think so? I think I know what you are thinking. On the surface it seems to be true and completely sensible. After all, the whole reason programming languages were invented was so we would have a way to tell computers to do stuff. You know, speak to them in a way they can understand. Be that as it may, programmers are <strong>not</strong>, I repeat <strong>not</strong> people who write code for computers. In actuality, <strong>Programmers are people who create programs</strong>. Think I am being overly dogmatic? Well I&rsquo;m not. The difference is not a matter of mere semantics, but of an underlying understanding of what your goal as a developer really is. The side of this divide you fall on will dictate a great deal about the programs you create and the code you write to create them.</p>
 
-<p>When writing code (as a programmer, developer, software engineer, or whatever you want to call yourself), it is very important for your computer, and other computers, to understands it. Yes, for sure. However, it is <em>even more</em> important for <em>people</em> to understand it. I&rsquo;m seriously not making this up. Just look at this quote from the renowned <a href="http://en.wikipedia.org/wiki/Hal_Abelson">Hal Ableson</a>:</p>
+<p>When writing code (as a programmer, developer, software engineer, or whatever you want to call yourself), it is very important for your computer, and other computers, to understands it. Yes, for sure. However, it is <em>even more</em> important for <em>people</em> to understand it. I&rsquo;m seriously not making this up. Just look at this quote from the renowned <a href="http://en.wikipedia.org/wiki/Hal_Abelson" target="_blank">Hal Ableson</a>:</p>
 
 <blockquote><p>&ldquo;Programs must be written for people to read, and only incidentally for machines to execute.&rdquo;</p></blockquote>
 
@@ -96,7 +96,7 @@ end
 
 <h2>Self Documenting Code (naming things)</h2>
 
-<p>So how could we write that procedure to be more expressive? There are a few important principles for writing expressive code. One of the most important ideas is called <a href="http://en.wikipedia.org/wiki/Self-documenting">self documenting code</a>. One key convention for self documenting code is giving variables meaningful and accurate names. Sound easy? Well actually, it can be pretty tough sometimes. You might be on a roll pumping out your code, not needing any help remembering what&rsquo;s what, and definitely not wanting to slow down just to think of what to name a variable. But it will come back to bite you and anyone who needs to work on the project if you don&rsquo;t take the extra set of seconds to come up with a decent name. Let&rsquo;s rewrite the previous example using simple, descriptive names for our variables:</p>
+<p>So how could we write that procedure to be more expressive? There are a few important principles for writing expressive code. One of the most important ideas is called <a href="http://en.wikipedia.org/wiki/Self-documenting" target="_blank">self documenting code</a>. One key convention for self documenting code is giving variables meaningful and accurate names. Sound easy? Well actually, it can be pretty tough sometimes. You might be on a roll pumping out your code, not needing any help remembering what&rsquo;s what, and definitely not wanting to slow down just to think of what to name a variable. But it will come back to bite you and anyone who needs to work on the project if you don&rsquo;t take the extra set of seconds to come up with a decent name. Let&rsquo;s rewrite the previous example using simple, descriptive names for our variables:</p>
 
 <p>```ruby
 music_library = [</p>
@@ -138,9 +138,9 @@ end
 
 <p>There we go. Everything makes sense now. That is an example of self documenting code. If you are like me, you look at this example and think, &ldquo;Yeah, I&rsquo;m gonna start making my code more readable. It&rsquo;ll be great.&rdquo; However, minutes later you will find yourself taking shortcuts, sacrificing clarity to save a line of code or two. Then you start making excuses for it, like, &ldquo;this is 3 lines shorter, so it must be more expressive.&rdquo; Or you might think about how impressed others will be when they see you chain six methods together on one line. And who doesn&rsquo;t want to be impressive? You don&rsquo;t, that&rsquo;s who.</p>
 
-<p>There&rsquo;s a really great talk called <a href="https://www.youtube.com/watch?v=0SARbwvhupQ">The Myth of the Genius Programmer</a> by a couple of guys from Google (Ben Collins-Sussman and Brian Fitzpatrick) in which they talk about some destructive habits programmers fall into in order to appear clever to their peers. The bottom line is that we like to look smart. The problem is that when we give our priority to making our code look smart over making our code easy to understand, we hinder our ability to collaborate with other developers. This hinders the project and our own continued growth. So always be on guard not to get carried away while refactoring your code. Refactor towards simplicity and clarity, not mere brevity. In other words, try to be <em>expressive</em>, not <em>impressive</em>.</p>
+<p>There&rsquo;s a really great talk called <a href="https://www.youtube.com/watch?v=0SARbwvhupQ" target="_blank">The Myth of the Genius Programmer</a> by a couple of guys from Google (Ben Collins-Sussman and Brian Fitzpatrick) in which they talk about some destructive habits programmers fall into in order to appear clever to their peers. The bottom line is that we like to look smart. The problem is that when we give our priority to making our code look smart over making our code easy to understand, we hinder our ability to collaborate with other developers. This hinders the project and our own continued growth. So always be on guard not to get carried away while refactoring your code. Refactor towards simplicity and clarity, not mere brevity. In other words, try to be <em>expressive</em>, not <em>impressive</em>.</p>
 
-<p>There are many other practices for writing expressive code that I have not gone into here, such as the <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle">Single Responsibility Principle</a>. I recommend <a href="https://robinwinslow.co.uk/2013/11/22/expressive-coding/">this blog post</a> on the subject of expressive code. His examples are in JavaScript. I found it a very helpful place to start.</p>
+<p>There are many other practices for writing expressive code that I have not gone into here, such as the <a href="http://en.wikipedia.org/wiki/Single_responsibility_principle" target="_blank">Single Responsibility Principle</a>. I recommend <a href="https://robinwinslow.co.uk/2013/11/22/expressive-coding/" target="_blank">this blog post</a> on the subject of expressive code. His examples are in JavaScript. I found it a very helpful place to start.</p>
 
 <h1>tl;dr</h1>
 
