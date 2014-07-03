@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Raise | Jacob's Programming Explosions]]></title>
+  <link href="http://jbarrieault.github.io/blog/categories/raise/atom.xml" rel="self"/>
+  <link href="http://jbarrieault.github.io/"/>
+  <updated>2014-07-03T08:51:55-04:00</updated>
+  <id>http://jbarrieault.github.io/</id>
+  <author>
+    <name><![CDATA[Jacob Barrieault]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Error Handling in Ruby]]></title>
+    <link href="http://jbarrieault.github.io/blog/2014/07/02/error-handling-in-ruby/"/>
+    <updated>2014-07-02T21:23:52-04:00</updated>
+    <id>http://jbarrieault.github.io/blog/2014/07/02/error-handling-in-ruby</id>
+    <content type="html"><![CDATA[<p>Errors. You&rsquo;ve seen &lsquo;em. Hundreds&hellip;Thousands&hellip;and that&rsquo;s just today! You might think errors are bad. But actually, errors are really good. It&rsquo;s bugs that are bad. Errors are good because they give you clues about why your program doesn&rsquo;t work, instead of leaving you completely on your own to trace down what is in many cases only a measely typo. Errors may be frustrating, but they are very good at telling us where and how our program crashed. Reading error messages intelligently is important, but you aren&rsquo;t constrained to only read errors after they terminate your program, you can actually tell your program how to respond to different types of errors! This is called error handling.</p>
+
+<p>If you are anything like me, you&rsquo;ve probably run into some code in Ruby that you know has to do with errors, but you have no idea what they mean or why they are there. I&rsquo;m talking about stuff that looks like:</p>
+
+<p>```ruby</p>
+
+<p>begin
+  raise &hellip;
+rescue &hellip;
+  &hellip;
+else
+  &hellip;
+ensure
+  &hellip;
+end
+```</p>
+
+<p><code>begin</code>, <code>raise</code>, <code>rescue</code>, <code>ensure</code>, what are all these about? I was wondering that too. So I did some reading and played around a bit. It&rsquo;s all really simple, but for a long time it was easy for me to ignore these blocks of code and be on my way. But I was missing out. So let&rsquo;s break that begin/end block apart.</p>
+
+<p>First though, let&rsquo;s lay some ground work here for our understanding of errors and exceptions in general. What should we know about errors and exceptions? Well, errors are classes that are all descendants of the Exception class. The difference between an exception and an error in Ruby is (in my understanding) very subtle, so we won&rsquo;t go into that. You can safely think of them as synonymous at a general level. I&rsquo;ll only be using the term error from this point on.</p>
+
+<p>We should also note that when an error occurs in a program, this is known as an error being <strong>raised</strong>. Ruby automatically raises errors whenever your program meets the conditions of any of Ruby&rsquo;s Exception class or it&rsquo;s descendants. So if you try <code>"x".pop</code>, Ruby will raise the NoMethodError. You can manually raise an error anywhere in a program by using <code>raise</code>, like so: <code>raise RuntimeError, "This is a custom message"</code>. Were you to leave that line of code out in the open, it would crash your program every time. If the program does not provide any code for dealing with such an error, the program will terminate. You can however provide your program with instructions concerning what to do when a certain type of error is raised as to prevent the program from terminating. This is known as <strong>error handling</strong>, which brings us the the begin/end block.</p>
+
+<p>A begin/end block is used to handle errors from within a program. Say we have a program that takes user input and then applies some logic to it in order to yield the program&rsquo;s final output. This is all well and good until the user pulls a fast one and supplies shoddie input, which is sure to break once we try applying the logic to it. The program crashes. Wouldn&rsquo;t it be better if we anticipated this kind of tomfoolery in such a way as to have our control flow handle the error that bad input would raise and prompt the user for input again if such was the case? That&rsquo;s what error handling, and more specifically the begin/rescue block is for. Let&rsquo;s look at a begin/rescue block in its simplest form.</p>
+
+<p><code>ruby
+begin
+  raise StandardError, "This is my optional custom error message"
+rescue
+  puts "I just delt with that error."
+end
+</code></p>
+
+<p>Here we raise a <code>StandardError</code> and supply it with an option custom error message. As we learned before, this would normally terminate the program, as errors do. But within a begin/rescue block with a rescue clause, we are given the opportunity to fix whatever caused the error and continue with the program. If you want to make a fix and start from the top of the block just to make sure it worked you can use <code>retry</code> at the bottom of the <code>rescue</code> clause. Maybe that example seems weird to you because I raised an error for seemingly no reason, so let&rsquo;s do it again where an error is raised based on a conditional statement.</p>
+
+<p>```ruby
+begin
+  days = %{sunday monday tuesday wednesday thursday friday}
+  puts &ldquo;Please enter a day of the week&rdquo;
+  input = gets.strip.downcase
+  raise StandardError, &ldquo;You did not follow the instructions.&rdquo; unless days.include?(input)
+rescue
+  puts &ldquo;Okay, I&rsquo;ll pick a day for you. Monday.&rdquo;
+  input = &ldquo;monday&rdquo;
+end</p>
+
+<h1>program uses input for stuff down here.</h1>
+
+<p>```</p>
+
+<p>In this example we ask the user for input and we expect it to be a day of the week. The StandardError is only raised if the conditional is not met, in which case we jump to the rescue clause. Here we tell the user what it is and choose monday on their behalf. This way, we are able to continue the program with a valid value for <code>input</code> that will work later on in the code. We could just put <code>retry</code> in the rescue clause in order to give the user another shot(s).</p>
+
+<p>There are two more components of the begin/rescue block worth touching on quickly. First is the <code>else</code> clause. This is simple what will run if no error is raised.</p>
+
+<p><code>ruby
+begin
+  # Code that may or may not raise an error
+rescue
+  # Error handling code
+else
+  # This runs only if no error gets raised.
+end
+</code></p>
+
+<p>Simple enough. The last piece is <code>ensure</code>. This one is easy too. Whatever is in the <code>ensure</code> clause will run at the very end of the begin/rescue block. It doesn&rsquo;t matter if an error was raised or not, or if there was an else clause or not. It just always happens, and it happens last. Like so:</p>
+
+<p>```ruby</p>
+
+<p>a, b = 1, &ldquo;x&rdquo;</p>
+
+<p>begin
+  a + b
+rescue TypeError
+  puts &ldquo;You can&rsquo;t add those types of objects together&rdquo;
+else
+  puts &ldquo;a + b worked fine, no rescue needed&rdquo;
+ensure
+  puts &ldquo;I print every time no matter what&rdquo;
+end
+```</p>
+
+<p>All in all it&rsquo;s pretty simple. But why would you want to write error handling code in your programs? Well, you certainly don&rsquo;t <em>always</em> want to. It should only be used for <em>exceptional</em> cases. And granted, the examples I used were too simple to actually warrant error handling. My intention was to focus more on the basic syntax and mechanics of error handling than the scenarios in which it is appropriate. Hopefully this article help you understand the very basics of handling errors in your Ruby programs.</p>
+
+<p>Here are some resources I found particularly helpful:</p>
+
+<p>General reading on exceptions:
+  <a href="http://www.tutorialspoint.com/ruby/ruby_exceptions.htm">http://www.tutorialspoint.com/ruby/ruby_exceptions.htm</a>
+  <a href="http://ruby.bastardsbook.com/chapters/exception-handling/">http://ruby.bastardsbook.com/chapters/exception-handling/</a>
+  <a href="http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/92-handling#solution4253">http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/92-handling#solution4253</a></p>
+
+<p>When/how to use rescue for handling exceptions:
+  <a href="http://daniel.fone.net.nz/blog/2013/05/28/why-you-should-never-rescue-exception-in-ruby/">http://daniel.fone.net.nz/blog/2013/05/28/why-you-should-never-rescue-exception-in-ruby/</a>
+  <a href="http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/93-throw-and-catch">http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/93-throw-and-catch</a></p>
+
+<p>Throw and Catch:
+  <a href="http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/">http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/</a></p>
+]]></content>
+  </entry>
+  
+</feed>

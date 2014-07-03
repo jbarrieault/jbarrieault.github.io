@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Error Handling in Ruby - Jacob's Programming Explosions</title>
+  <meta name="author" content="Jacob Barrieault">
+
+  
+  <meta name="description" content="Errors. You&rsquo;ve seen &lsquo;em. Hundreds&hellip;Thousands&hellip;and that&rsquo;s just today! You might think errors are bad. But actually, &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jbarrieault.github.io/blog/2014/07/02/error-handling-in-ruby">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jacob's Programming Explosions" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jacob's Programming Explosions</a></h1>
+  
+    <h2>Coding is fun and it hurts.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jbarrieault.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Error Handling in Ruby</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-02T21:23:52-04:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Errors. You&rsquo;ve seen &lsquo;em. Hundreds&hellip;Thousands&hellip;and that&rsquo;s just today! You might think errors are bad. But actually, errors are really good. It&rsquo;s bugs that are bad. Errors are good because they give you clues about why your program doesn&rsquo;t work, instead of leaving you completely on your own to trace down what is in many cases only a measely typo. Errors may be frustrating, but they are very good at telling us where and how our program crashed. Reading error messages intelligently is important, but you aren&rsquo;t constrained to only read errors after they terminate your program, you can actually tell your program how to respond to different types of errors! This is called error handling.</p>
+
+<p>If you are anything like me, you&rsquo;ve probably run into some code in Ruby that you know has to do with errors, but you have no idea what they mean or why they are there. I&rsquo;m talking about stuff that looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="k">raise</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</span><span class='line'><span class="k">rescue</span> <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</span><span class='line'>  <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</span><span class='line'><span class="k">ensure</span>
+</span><span class='line'>  <span class="o">.</span> <span class="o">.</span> <span class="o">.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>begin</code>, <code>raise</code>, <code>rescue</code>, <code>ensure</code>, what are all these about? I was wondering that too. So I did some reading and played around a bit. It&rsquo;s all really simple, but for a long time it was easy for me to ignore these blocks of code and be on my way. But I was missing out. So let&rsquo;s break that begin/end block apart.</p>
+
+<p>First though, let&rsquo;s lay some ground work here for our understanding of errors and exceptions in general. What should we know about errors and exceptions? Well, errors are classes that are all descendants of the Exception class. The difference between an exception and an error in Ruby is (in my understanding) very subtle, so we won&rsquo;t go into that. You can safely think of them as synonymous at a general level. I&rsquo;ll only be using the term error from this point on.</p>
+
+<p>We should also note that when an error occurs in a program, this is known as an error being <strong>raised</strong>. Ruby automatically raises errors whenever your program meets the conditions of any of Ruby&rsquo;s Exception class or it&rsquo;s descendants. So if you try <code>"x".pop</code>, Ruby will raise the NoMethodError. You can manually raise an error anywhere in a program by using <code>raise</code>, like so: <code>raise RuntimeError, "This is a custom message"</code>. Were you to leave that line of code out in the open, it would crash your program every time. If the program does not provide any code for dealing with such an error, the program will terminate. You can however provide your program with instructions concerning what to do when a certain type of error is raised as to prevent the program from terminating. This is known as <strong>error handling</strong>, which brings us the the begin/end block.</p>
+
+<p>A begin/end block is used to handle errors from within a program. Say we have a program that takes user input and then applies some logic to it in order to yield the program&rsquo;s final output. This is all well and good until the user pulls a fast one and supplies shoddie input, which is sure to break once we try applying the logic to it. The program crashes. Wouldn&rsquo;t it be better if we anticipated this kind of tomfoolery in such a way as to have our control flow handle the error that bad input would raise and prompt the user for input again if such was the case? That&rsquo;s what error handling, and more specifically the begin/rescue block is for. Let&rsquo;s look at a begin/rescue block in its simplest form.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s2">&quot;This is my optional custom error message&quot;</span>
+</span><span class='line'><span class="k">rescue</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;I just delt with that error.&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here we raise a <code>StandardError</code> and supply it with an option custom error message. As we learned before, this would normally terminate the program, as errors do. But within a begin/rescue block with a rescue clause, we are given the opportunity to fix whatever caused the error and continue with the program. If you want to make a fix and start from the top of the block just to make sure it worked you can use <code>retry</code> at the bottom of the <code>rescue</code> clause. Maybe that example seems weird to you because I raised an error for seemingly no reason, so let&rsquo;s do it again where an error is raised based on a conditional statement.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="n">days</span> <span class="o">=</span> <span class="sx">%{sunday monday tuesday wednesday thursday friday}</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Please enter a day of the week&quot;</span>
+</span><span class='line'>  <span class="n">input</span> <span class="o">=</span> <span class="nb">gets</span><span class="o">.</span><span class="n">strip</span><span class="o">.</span><span class="n">downcase</span>
+</span><span class='line'>  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s2">&quot;You did not follow the instructions.&quot;</span> <span class="k">unless</span> <span class="n">days</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+</span><span class='line'><span class="k">rescue</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;Okay, I&#39;ll pick a day for you. Monday.&quot;</span>
+</span><span class='line'>  <span class="n">input</span> <span class="o">=</span> <span class="s2">&quot;monday&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># program uses input for stuff down here.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this example we ask the user for input and we expect it to be a day of the week. The StandardError is only raised if the conditional is not met, in which case we jump to the rescue clause. Here we tell the user what it is and choose monday on their behalf. This way, we are able to continue the program with a valid value for <code>input</code> that will work later on in the code. We could just put <code>retry</code> in the rescue clause in order to give the user another shot(s).</p>
+
+<p>There are two more components of the begin/rescue block worth touching on quickly. First is the <code>else</code> clause. This is simple what will run if no error is raised.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="c1"># Code that may or may not raise an error</span>
+</span><span class='line'><span class="k">rescue</span>
+</span><span class='line'>  <span class="c1"># Error handling code</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="c1"># This runs only if no error gets raised.</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Simple enough. The last piece is <code>ensure</code>. This one is easy too. Whatever is in the <code>ensure</code> clause will run at the very end of the begin/rescue block. It doesn&rsquo;t matter if an error was raised or not, or if there was an else clause or not. It just always happens, and it happens last. Like so:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">begin</span>
+</span><span class='line'>  <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</span><span class='line'><span class="k">rescue</span> <span class="no">TypeError</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;You can&#39;t add those types of objects together&quot;</span>
+</span><span class='line'><span class="k">else</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;a + b worked fine, no rescue needed&quot;</span>
+</span><span class='line'><span class="k">ensure</span>
+</span><span class='line'>  <span class="nb">puts</span> <span class="s2">&quot;I print every time no matter what&quot;</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>All in all it&rsquo;s pretty simple. But why would you want to write error handling code in your programs? Well, you certainly don&rsquo;t <em>always</em> want to. It should only be used for <em>exceptional</em> cases. And granted, the examples I used were too simple to actually warrant error handling. My intention was to focus more on the basic syntax and mechanics of error handling than the scenarios in which it is appropriate. Hopefully this article help you understand the very basics of handling errors in your Ruby programs.</p>
+
+<p>Here are some resources I found particularly helpful:</p>
+
+<p>General reading on exceptions:
+  <a href="http://www.tutorialspoint.com/ruby/ruby_exceptions.htm">http://www.tutorialspoint.com/ruby/ruby_exceptions.htm</a>
+  <a href="http://ruby.bastardsbook.com/chapters/exception-handling/">http://ruby.bastardsbook.com/chapters/exception-handling/</a>
+  <a href="http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/92-handling#solution4253">http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/92-handling#solution4253</a></p>
+
+<p>When/how to use rescue for handling exceptions:
+  <a href="http://daniel.fone.net.nz/blog/2013/05/28/why-you-should-never-rescue-exception-in-ruby/">http://daniel.fone.net.nz/blog/2013/05/28/why-you-should-never-rescue-exception-in-ruby/</a>
+  <a href="http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/93-throw-and-catch">http://rubymonk.com/learning/books/4-ruby-primer-ascent/chapters/41-exceptions/lessons/93-throw-and-catch</a></p>
+
+<p>Throw and Catch:
+  <a href="http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/">http://rubylearning.com/blog/2011/07/12/throw-catch-raise-rescue-im-so-confused/</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacob Barrieault</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-07-02T21:23:52-04:00" pubdate data-updated="true">Jul 2<span>nd</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/development/'>development</a>, <a class='category' href='/blog/categories/errors/'>errors</a>, <a class='category' href='/blog/categories/exceptions/'>exceptions</a>, <a class='category' href='/blog/categories/programming/'>programming</a>, <a class='category' href='/blog/categories/raise/'>raise</a>, <a class='category' href='/blog/categories/rescue/'>rescue</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jbarrieault.github.io/blog/2014/07/02/error-handling-in-ruby/" data-via="" data-counturl="http://jbarrieault.github.io/blog/2014/07/02/error-handling-in-ruby/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/06/19/expressive/" title="Previous Post: Expressive, Not Impressive">&laquo; Expressive, Not Impressive</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/07/02/error-handling-in-ruby/">Error Handling in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/19/expressive/">Expressive, Not Impressive</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jacob Barrieault -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
