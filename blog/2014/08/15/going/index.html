@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Going, Going, Gon - Jacob's Programming Explosions</title>
+  <meta name="author" content="Jacob Barrieault">
+
+  
+  <meta name="description" content="This post is about passing variables from your rails controller to your javascript files. Recently, I was working on a rails project involving some &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://jbarrieault.github.io/blog/2014/08/15/going">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Jacob's Programming Explosions" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Jacob's Programming Explosions</a></h1>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:jbarrieault.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Going, Going, Gon</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-15T19:54:10-04:00" pubdate data-updated="true">Aug 15<span>th</span>, 2014</time>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><em>This post is about passing variables from your rails controller to your javascript files.</em></p>
+
+<p>Recently, I was working on a rails project involving some javascript on the front end. Javascript is fun, so I was excited to get started on it. The feature was going to be a set of charts (using the chart.js library) populated with data relating to a group of users. It didn&rsquo;t take me long to figure out that while it is super easy to pass data from a controller to a view, I didn&rsquo;t actually know how to pass anything from my controllers to my javascript files. I tinkered around for a bit without any success. At one point I started to consider the ridiculous idea of firing an AJAX GET request back to my controller on page load using JQuery to get what I needed, since I already knew how to do that. But that felt really dirty, and I&rsquo;m a little embarrassed to even mention it.</p>
+
+<p>Then my friend Amy told me to use Gon.</p>
+
+<p>Gon? It&rsquo;s a sweet gem for passing variables from your rails controller to your javascript files. Just what I needed! Gon is incredibly easy to use. I&rsquo;ll show you.</p>
+
+<ol>
+<li><p>First, add Gon to your <code>Gemfile</code> and run <code>bundle install</code>. Now you are ready to get down to business!</p></li>
+<li><p>In the appropriate controller and action, we&rsquo;re going to create a variable for the data you want to pass to the js file. Here I&rsquo;m in <code>groups_controller.rb</code> in the <code>show</code> action. This action is responsible for a single group&rsquo;s page (ie example.com/groups/3). This action renders /app/views/groups/show.html.erb, inside of which I include my javascript file via a <code>javascript_include_tag</code> (/app/assets/javascripts/groups_show.js). All you need to do is name your variable like so: <code>gon.your_variable_name</code>.</p></li>
+</ol>
+
+
+<p><code>groups_controller.rb</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>  <span class="vi">@group</span> <span class="o">=</span> <span class="no">Group</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">gon</span><span class="o">.</span><span class="n">group_name</span> <span class="o">=</span> <span class="vi">@group</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>That&rsquo;s it! <code>gon.group_name</code> is now available in my <code>groups_show.js</code> file.</li>
+</ol>
+
+
+<p><code>groups_show.js</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">groupName</span> <span class="o">=</span> <span class="nx">gon</span><span class="p">.</span><span class="nx">group_name</span>
+</span><span class='line'><span class="c1">// That was really easy.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>As you can see, Gon is a super useful and easy way to pass data from you controllers to your javascript files.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Jacob Barrieault</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-15T19:54:10-04:00" pubdate data-updated="true">Aug 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/gon/'>Gon</a>, <a class='category' href='/blog/categories/javascript/'>Javascript</a>, <a class='category' href='/blog/categories/rails/'>Rails</a>, <a class='category' href='/blog/categories/ruby/'>Ruby</a>, <a class='category' href='/blog/categories/web-development/'>Web Development</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://jbarrieault.github.io/blog/2014/08/15/going/" data-via="" data-counturl="http://jbarrieault.github.io/blog/2014/08/15/going/" >Tweet</a>
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/07/02/error-handling-in-ruby/" title="Previous Post: Error Handling in Ruby">&laquo; Error Handling in Ruby</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2014/08/15/going/">Going, Going, Gon</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/07/02/error-handling-in-ruby/">Error Handling in Ruby</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2014/06/19/expressive/">Expressive, Not Impressive</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Jacob Barrieault -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

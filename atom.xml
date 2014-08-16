@@ -4,7 +4,7 @@
   <title><![CDATA[Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-07-03T08:51:55-04:00</updated>
+  <updated>2014-08-15T21:05:25-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -12,6 +12,58 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Going, Going, Gon]]></title>
+    <link href="http://jbarrieault.github.io/blog/2014/08/15/going/"/>
+    <updated>2014-08-15T19:54:10-04:00</updated>
+    <id>http://jbarrieault.github.io/blog/2014/08/15/going</id>
+    <content type="html"><![CDATA[<p><em>This post is about passing variables from your rails controller to your javascript files.</em></p>
+
+<p>Recently, I was working on a rails project involving some javascript on the front end. Javascript is fun, so I was excited to get started on it. The feature was going to be a set of charts (using the chart.js library) populated with data relating to a group of users. It didn&rsquo;t take me long to figure out that while it is super easy to pass data from a controller to a view, I didn&rsquo;t actually know how to pass anything from my controllers to my javascript files. I tinkered around for a bit without any success. At one point I started to consider the ridiculous idea of firing an AJAX GET request back to my controller on page load using JQuery to get what I needed, since I already knew how to do that. But that felt really dirty, and I&rsquo;m a little embarrassed to even mention it.</p>
+
+<p>Then my friend Amy told me to use Gon.</p>
+
+<p>Gon? It&rsquo;s a sweet gem for passing variables from your rails controller to your javascript files. Just what I needed! Gon is incredibly easy to use. I&rsquo;ll show you.</p>
+
+<ol>
+<li><p>First, add Gon to your <code>Gemfile</code> and run <code>bundle install</code>. Now you are ready to get down to business!</p></li>
+<li><p>In the appropriate controller and action, we&rsquo;re going to create a variable for the data you want to pass to the js file. Here I&rsquo;m in <code>groups_controller.rb</code> in the <code>show</code> action. This action is responsible for a single group&rsquo;s page (ie example.com/groups/3). This action renders /app/views/groups/show.html.erb, inside of which I include my javascript file via a <code>javascript_include_tag</code> (/app/assets/javascripts/groups_show.js). All you need to do is name your variable like so: <code>gon.your_variable_name</code>.</p></li>
+</ol>
+
+
+<p><code>groups_controller.rb</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="k">def</span> <span class="nf">show</span>
+</span><span class='line'>  <span class="vi">@group</span> <span class="o">=</span> <span class="no">Group</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
+</span><span class='line'>  <span class="n">gon</span><span class="o">.</span><span class="n">group_name</span> <span class="o">=</span> <span class="vi">@group</span><span class="o">.</span><span class="n">name</span>
+</span><span class='line'><span class="k">end</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ol>
+<li>That&rsquo;s it! <code>gon.group_name</code> is now available in my <code>groups_show.js</code> file.</li>
+</ol>
+
+
+<p><code>groups_show.js</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">var</span> <span class="nx">groupName</span> <span class="o">=</span> <span class="nx">gon</span><span class="p">.</span><span class="nx">group_name</span>
+</span><span class='line'><span class="c1">// That was really easy.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>As you can see, Gon is a super useful and easy way to pass data from you controllers to your javascript files.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Error Handling in Ruby]]></title>
