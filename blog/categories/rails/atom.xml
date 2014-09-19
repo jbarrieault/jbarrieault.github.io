@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rails | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/rails/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-08-15T21:05:25-04:00</updated>
+  <updated>2014-09-19T12:52:32-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -27,7 +27,7 @@
 <p>Gon? It&rsquo;s a sweet gem for passing variables from your rails controller to your javascript files. Just what I needed! Gon is incredibly easy to use. I&rsquo;ll show you.</p>
 
 <ol>
-<li><p>First, add Gon to your <code>Gemfile</code> and run <code>bundle install</code>. Now you are ready to get down to business!</p></li>
+<li><p>First, add Gon to your <code>Gemfile</code> (and run <code>bundle install</code>). Now add <code>&lt;%= include_gon %&gt;</code> in the <code>&lt;head&gt;&lt;/head&gt;</code> section of application.html.erb. Now you are ready to get down to business!</p></li>
 <li><p>In the appropriate controller and action, we&rsquo;re going to create a variable for the data you want to pass to the js file. Here I&rsquo;m in <code>groups_controller.rb</code> in the <code>show</code> action. This action is responsible for a single group&rsquo;s page (ie example.com/groups/3). This action renders /app/views/groups/show.html.erb, inside of which I include my javascript file via a <code>javascript_include_tag</code> (/app/assets/javascripts/groups_show.js). All you need to do is name your variable like so: <code>gon.your_variable_name</code>.</p></li>
 </ol>
 
