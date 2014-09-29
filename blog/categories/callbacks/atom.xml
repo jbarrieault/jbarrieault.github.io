@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Callbacks | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/callbacks/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-09-29T16:59:18-04:00</updated>
+  <updated>2014-09-29T17:07:36-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -22,7 +22,7 @@
 
 <p>The other day, I was at the grocery store with my wife when a graphic designer friend of mine texted me asking for some jQuery help for his website.</p>
 
-<p><img src="https://docs.google.com/uc?id=0B3Dg0tv-EwE7elJ4VDdqVUFSbEQzc25XR2Z6dTRDcE5kTGxB" alt="text conversation with my friend"></p>
+<p><img src="https://docs.google.com/uc?id=0B3Dg0tv-EwE7elJ4VDdqVUFSbEQzc25XR2Z6dTRDcE5kTGxB" alt="text conversation with my friend" style="width:300px;"></p>
 
 <p>Basically, he was doing a couple of jQuery animations and had another animation he wanted to happen only once the others were complete. He couldn&rsquo;t figure out how to make the last animation wait until all the others were complete. If you are familar with jQuery at all this will make sense to you (and you may want to jump down to the <a href="#fancy">next section</a>). Maybe you have also had this problem. In case you aren&rsquo;t familar, the problem my friend had was due to the fact that jQuery animation functions (and AJAX funtions!) run asynchronously. For instance:</p>
 
@@ -63,7 +63,9 @@ $(&lsquo;div&rsquo;).fadeIn(1000, function(){
 
 <h2><a name="fancy"></a>Getting Fancy</h2>
 
-<p>So back to my friend&rsquo;s problem. He had some animations he wanted to do, and another animation he wanted to happen only after all the others were finished. The catch is that he wanted the initial set of animations to happen asynchronously <em>and</em> he didn&rsquo;t know how long the animations would take to finish. Of couse, getting the first set of animations to happen asychronously took no effort; he just called them one after the other. The real problem was knowing when all of the animations were done. This situation is a lot less linear than the scenario we went over above. We can&rsquo;t simply pass each animation as a callback for the previous one, as we want the batch of animations to run concurrently. Also, we cannot simply pass the final animation as a callback, since we don&rsquo;t know which animation will be the final animation. <strong>We need a way of saying, &ldquo;hey, <em>when</em> all of these animations are <em>done</em>, do this animation.&rdquo;</strong></p>
+<p>So back to my friend&rsquo;s problem. He had some animations he wanted to do, and another animation he wanted to happen only after all the others were finished. The catch is that he wanted the initial set of animations to happen asynchronously <em>and</em> he didn&rsquo;t know how long the animations would take to finish. Of couse, getting the first set of animations to happen asychronously took no effort; he just called them one after the other.</p>
+
+<p><strong>The real problem was knowing when all of the animations were done.</strong> This situation is a lot less linear than the scenario we went over above. We can&rsquo;t simply pass each animation as a callback for the previous one, as we want the batch of animations to run concurrently. Also, we cannot simply pass the final animation as a callback, since we don&rsquo;t know which animation will be the final animation. <strong>We need a way of saying, &ldquo;hey, <em>when</em> all of these animations are <em>done</em>, do this animation.&rdquo;</strong></p>
 
 <h3>This is where promises save the day!<br/></h3>
 
