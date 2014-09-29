@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Callbacks | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/callbacks/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-09-29T16:21:17-04:00</updated>
+  <updated>2014-09-29T16:59:18-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -15,16 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[Managing jQuery Animations With Promises]]></title>
-    <link href="http://jbarrieault.github.io/blog/2014/09/29/jquery-promises/"/>
+    <link href="http://jbarrieault.github.io/blog/2014/09/29/managing-jquery-animations-with-promises/"/>
     <updated>2014-09-29T12:38:54-04:00</updated>
-    <id>http://jbarrieault.github.io/blog/2014/09/29/jquery-promises</id>
+    <id>http://jbarrieault.github.io/blog/2014/09/29/managing-jquery-animations-with-promises</id>
     <content type="html"><![CDATA[<p><em>This post is about managing asynchronous functions in jQuery</em></p>
 
 <p>The other day, I was at the grocery store with my wife when a graphic designer friend of mine texted me asking for some jQuery help for his website.</p>
 
 <p><img src="https://docs.google.com/uc?id=0B3Dg0tv-EwE7elJ4VDdqVUFSbEQzc25XR2Z6dTRDcE5kTGxB" alt="text conversation with my friend"></p>
 
-<p>Basically, he was doing a couple of jQuery animations and had another animation he wanted to happen only once the others were complete. He couldn&rsquo;t figure out how to make the last animation wait until all the others were complete. If you are familar with jQuery at all this will make sense to you (and you may want to jump down to the next section). Maybe you have also had this problem. In case you aren&rsquo;t familar, the problem my friend had was due to the fact that jQuery animation functions (and AJAX funtions!) run asynchronously. For instance:</p>
+<p>Basically, he was doing a couple of jQuery animations and had another animation he wanted to happen only once the others were complete. He couldn&rsquo;t figure out how to make the last animation wait until all the others were complete. If you are familar with jQuery at all this will make sense to you (and you may want to jump down to the <a href="#fancy">next section</a>). Maybe you have also had this problem. In case you aren&rsquo;t familar, the problem my friend had was due to the fact that jQuery animation functions (and AJAX funtions!) run asynchronously. For instance:</p>
 
 <p><code>javascript
 $('.green-div').hide();
@@ -61,11 +61,11 @@ $(&lsquo;div&rsquo;).fadeIn(1000, function(){
 
 <p>This works, but we are nearing the gates of Callback Hell. Even in this contrived, simple example our code has become messy looking. And messy looking code is hard to maintain. We could have at least used named functions&hellip;I mean c'mon.</p>
 
-<h2>Getting Fancy</h2>
+<h2><a name="fancy"></a>Getting Fancy</h2>
 
 <p>So back to my friend&rsquo;s problem. He had some animations he wanted to do, and another animation he wanted to happen only after all the others were finished. The catch is that he wanted the initial set of animations to happen asynchronously <em>and</em> he didn&rsquo;t know how long the animations would take to finish. Of couse, getting the first set of animations to happen asychronously took no effort; he just called them one after the other. The real problem was knowing when all of the animations were done. This situation is a lot less linear than the scenario we went over above. We can&rsquo;t simply pass each animation as a callback for the previous one, as we want the batch of animations to run concurrently. Also, we cannot simply pass the final animation as a callback, since we don&rsquo;t know which animation will be the final animation. <strong>We need a way of saying, &ldquo;hey, <em>when</em> all of these animations are <em>done</em>, do this animation.&rdquo;</strong></p>
 
-<h3>This is where promises save the day!</h3>
+<h3>This is where promises save the day!<br/></h3>
 
 <p>Promises help us manage asynchronous operations and their callbacks. Let&rsquo;s me show an example based on my friend&rsquo;s problem. For this example we have a <code>&lt;button&gt;</code>, three <code>&lt;div&gt;</code>s and a <code>&lt;p&gt;</code>. When the user clicks the botton, we want to perform a unique animation for each of the <code>&lt;div&gt;</code>s (concurrently!). Once those are all done, we want to append the <code>&lt;p&gt;</code> to notify the user that they are awesome. To accomplish this, we are going to use jQuery&rsquo;s <code>.when()</code> and <code>.done()</code> functions. I&rsquo;ll explain more below, but for now, just note that jQuery&rsquo;s animations (as well as AJAX functions) return a promise.</p>
 
@@ -84,9 +84,8 @@ $('.div2').animate({'margin-left': '120px'})
 </code></pre>
 
 <p>  });
-})</p>
-
-<p>```</p>
+})
+```</p>
 
 <p>When the button is clicked, we fire the three animations within <code>.when()</code>. Once all three are completed, the function provided to <code>.done()</code> is called. You can check out a live demo <a href="http://jsfiddle.net/op62o7rp/">here</a>.</p>
 
@@ -98,7 +97,7 @@ $('.div2').animate({'margin-left': '120px'})
 
 <p>As I hinted earlier, jQuery&rsquo;s AJAX functions can also make use of <code>.when()</code> and <code>.done()</code>, as well as a function called <code>.then()</code>. The <code>.done()</code> and <code>.then()</code> functions are fairly similar, and replacing <code>.done()</code> with <code>.then()</code> in our code above would actually give us the same result. One detail to note is that <code>.done()</code> can be passed multiple functions, or an array of functions. Passing multiple callbacks to done is nice if you want some stuff to happen asynchronously. If you have some things you want to do linearly, you can chain <code>.done()</code>&rsquo;s onto each other. ie: <code>$.when(animateSomething, animateSomethingElse).done(doThis).done(thenThis);</code></p>
 
-<p>So what is really going on when you use <code>.when()</code> and <code>.then()</code>? Well, <code>.when()</code> is waiting until the state of the promises passed to it (in our case we passed functions that <em>returned</em> promises) are all &lsquo;<code>resolved</code>&rsquo; (as opposed to &lsquo;pending&rsquo; or &lsquo;rejected&rsquo;). Once this happens, the <code>.done()</code> callbacks are fired. For a deeper understanding of promises (jQuery&rsquo;s implementation, specifically), check out the links below.</p>
+<p>So what is really going on when you use <code>.when()</code> and <code>.then()</code>? Well, <code>.when()</code> is waiting until the state of the promises passed to it (in our case we passed functions that <em>returned</em> promises) are all &lsquo;resolved&rsquo; (as opposed to &lsquo;pending&rsquo; or &lsquo;rejected&rsquo;). Once this happens, the <code>.done()</code> callbacks are fired. For a deeper understanding of promises (jQuery&rsquo;s implementation, specifically), check out the links below.</p>
 
 <p>I&rsquo;d like to write more technically about promises (and deferreds) in jQuery in the near future. They are especially powerful for managing AJAX transations. So stay tuned!</p>
 
