@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Javascript | Jacob's Programming Explosions]]></title>
+  <title><![CDATA[Category: JavaScript | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-09-19T12:52:32-04:00</updated>
+  <updated>2014-09-29T16:21:17-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -14,44 +14,102 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Going, Going, Gon]]></title>
-    <link href="http://jbarrieault.github.io/blog/2014/08/15/going/"/>
-    <updated>2014-08-15T19:54:10-04:00</updated>
-    <id>http://jbarrieault.github.io/blog/2014/08/15/going</id>
-    <content type="html"><![CDATA[<p><em>This post is about passing variables from your rails controller to your javascript files.</em></p>
+    <title type="html"><![CDATA[Managing jQuery Animations With Promises]]></title>
+    <link href="http://jbarrieault.github.io/blog/2014/09/29/jquery-promises/"/>
+    <updated>2014-09-29T12:38:54-04:00</updated>
+    <id>http://jbarrieault.github.io/blog/2014/09/29/jquery-promises</id>
+    <content type="html"><![CDATA[<p><em>This post is about managing asynchronous functions in jQuery</em></p>
 
-<p>Recently, I was working on a rails project involving some javascript on the front end. Javascript is fun, so I was excited to get started on it. The feature was going to be a set of charts (using the chart.js library) populated with data relating to a group of users. It didn&rsquo;t take me long to figure out that while it is super easy to pass data from a controller to a view, I didn&rsquo;t actually know how to pass anything from my controllers to my javascript files. I tinkered around for a bit without any success. At one point I started to consider the ridiculous idea of firing an AJAX GET request back to my controller on page load using JQuery to get what I needed, since I already knew how to do that. But that felt really dirty, and I&rsquo;m a little embarrassed to even mention it.</p>
+<p>The other day, I was at the grocery store with my wife when a graphic designer friend of mine texted me asking for some jQuery help for his website.</p>
 
-<p>Then my friend Amy told me to use Gon.</p>
+<p><img src="https://docs.google.com/uc?id=0B3Dg0tv-EwE7elJ4VDdqVUFSbEQzc25XR2Z6dTRDcE5kTGxB" alt="text conversation with my friend"></p>
 
-<p>Gon? It&rsquo;s a sweet gem for passing variables from your rails controller to your javascript files. Just what I needed! Gon is incredibly easy to use. I&rsquo;ll show you.</p>
+<p>Basically, he was doing a couple of jQuery animations and had another animation he wanted to happen only once the others were complete. He couldn&rsquo;t figure out how to make the last animation wait until all the others were complete. If you are familar with jQuery at all this will make sense to you (and you may want to jump down to the next section). Maybe you have also had this problem. In case you aren&rsquo;t familar, the problem my friend had was due to the fact that jQuery animation functions (and AJAX funtions!) run asynchronously. For instance:</p>
 
-<ol>
-<li><p>First, add Gon to your <code>Gemfile</code> (and run <code>bundle install</code>). Now add <code>&lt;%= include_gon %&gt;</code> in the <code>&lt;head&gt;&lt;/head&gt;</code> section of application.html.erb. Now you are ready to get down to business!</p></li>
-<li><p>In the appropriate controller and action, we&rsquo;re going to create a variable for the data you want to pass to the js file. Here I&rsquo;m in <code>groups_controller.rb</code> in the <code>show</code> action. This action is responsible for a single group&rsquo;s page (ie example.com/groups/3). This action renders /app/views/groups/show.html.erb, inside of which I include my javascript file via a <code>javascript_include_tag</code> (/app/assets/javascripts/groups_show.js). All you need to do is name your variable like so: <code>gon.your_variable_name</code>.</p></li>
-</ol>
-
-
-<p><code>groups_controller.rb</code>
-<code>ruby
-def show
-  @group = Group.find(params[:id])
-  gon.group_name = @group.name
-end
+<p><code>javascript
+$('.green-div').hide();
+$('.green-div').fadeIn(1000);
+$('.green-div').css({'background-color': 'blue'});
 </code></p>
 
-<ol>
-<li>That&rsquo;s it! <code>gon.group_name</code> is now available in my <code>groups_show.js</code> file.</li>
-</ol>
+<p>In this example the initially hidden green div will take 1000 miliseconds to fade in and its color will be changed to blue. However, you will not see the color of the div change from green to blue. It will fade in as blue. This is because line 3 gets called before line 2&rsquo;s fadeIn function has completed. This is because .fadeIn() executes asynchronously. Meaning, it gets called and starts doing its thing, but the program does not wait until it has finished before evaluating the next line of code. So again, the reason you would have never seen the div turn blue is because line 3 executed very quickly while line 2 took a second.</p>
 
+<p>For situations as simple as this one, the solution would be to pass a callback function to .fadeIn(). Like so:</p>
 
-<p><code>groups_show.js</code>
-<code>javascript
-var groupName = gon.group_name
-// That was really easy.
+<p><code>javascript
+$('div').hide();
+$('div').fadeIn(1000, function(){
+  $('div').css({'background-color': 'blue'});
+});
 </code></p>
 
-<p>As you can see, Gon is a super useful and easy way to pass data from you controllers to your javascript files.</p>
+<p>This time, we pass an anonymous function to .fadeIn(), which gets called only once .fadeIn() has finished its job. So here we would see the div fade in, then it would snap to blue.</p>
+
+<p>Okay, so what if you have <em>three</em> functions you want to happen sequentially? What if between fading in the div and turning it blue we also wanted to slide it down 50 pixels? Things get a little stickier. But as you may know, we could just pass a callback to the function we want the slide to happen after:</p>
+
+<p>```javascript
+$(&lsquo;div&rsquo;).hide();
+$(&lsquo;div&rsquo;).fadeIn(1000, function(){
+  $(&lsquo;div&rsquo;).animate({&lsquo;margin-top&rsquo;: &lsquo;50px&rsquo;}, 300, function(){</p>
+
+<pre><code>$('div').css({'background-color': 'blue'});
+</code></pre>
+
+<p>  });
+});
+```</p>
+
+<p>This works, but we are nearing the gates of Callback Hell. Even in this contrived, simple example our code has become messy looking. And messy looking code is hard to maintain. We could have at least used named functions&hellip;I mean c'mon.</p>
+
+<h2>Getting Fancy</h2>
+
+<p>So back to my friend&rsquo;s problem. He had some animations he wanted to do, and another animation he wanted to happen only after all the others were finished. The catch is that he wanted the initial set of animations to happen asynchronously <em>and</em> he didn&rsquo;t know how long the animations would take to finish. Of couse, getting the first set of animations to happen asychronously took no effort; he just called them one after the other. The real problem was knowing when all of the animations were done. This situation is a lot less linear than the scenario we went over above. We can&rsquo;t simply pass each animation as a callback for the previous one, as we want the batch of animations to run concurrently. Also, we cannot simply pass the final animation as a callback, since we don&rsquo;t know which animation will be the final animation. <strong>We need a way of saying, &ldquo;hey, <em>when</em> all of these animations are <em>done</em>, do this animation.&rdquo;</strong></p>
+
+<h3>This is where promises save the day!</h3>
+
+<p>Promises help us manage asynchronous operations and their callbacks. Let&rsquo;s me show an example based on my friend&rsquo;s problem. For this example we have a <code>&lt;button&gt;</code>, three <code>&lt;div&gt;</code>s and a <code>&lt;p&gt;</code>. When the user clicks the botton, we want to perform a unique animation for each of the <code>&lt;div&gt;</code>s (concurrently!). Once those are all done, we want to append the <code>&lt;p&gt;</code> to notify the user that they are awesome. To accomplish this, we are going to use jQuery&rsquo;s <code>.when()</code> and <code>.done()</code> functions. I&rsquo;ll explain more below, but for now, just note that jQuery&rsquo;s animations (as well as AJAX functions) return a promise.</p>
+
+<p>```javascript
+$(&lsquo;button&rsquo;).click(function(){
+  $.when(</p>
+
+<pre><code>$('.div1').animate({'margin-left': '40px'}),
+$('.div2').animate({'margin-left': '80px'}),
+$('.div2').animate({'margin-left': '120px'})
+</code></pre>
+
+<p>  ).done(function(){</p>
+
+<pre><code>$('p').append('You are awesome!');
+</code></pre>
+
+<p>  });
+})</p>
+
+<p>```</p>
+
+<p>When the button is clicked, we fire the three animations within <code>.when()</code>. Once all three are completed, the function provided to <code>.done()</code> is called. You can check out a live demo <a href="http://jsfiddle.net/op62o7rp/">here</a>.</p>
+
+<p>This not only solves our problems, it is also beautiful!</p>
+
+<p>I wish I could say that I immediately knew using <code>.when()</code> and <code>.done()</code> was the solution my friend was looking for and that I texted him that while I was wandering up and down the aisles at Associated, but I think my initial reaction was something like, &ldquo;Hm&hellip;it should be easy. Crap, how DO you do that&hellip;&rdquo; The embarrassment of lacking a solution was all the motivation I needed to dive in to the wonderful world of deferreds and promises. And I&rsquo;m really glad I did, because they&rsquo;re awesome.</p>
+
+<h2>Getting Technical</h2>
+
+<p>As I hinted earlier, jQuery&rsquo;s AJAX functions can also make use of <code>.when()</code> and <code>.done()</code>, as well as a function called <code>.then()</code>. The <code>.done()</code> and <code>.then()</code> functions are fairly similar, and replacing <code>.done()</code> with <code>.then()</code> in our code above would actually give us the same result. One detail to note is that <code>.done()</code> can be passed multiple functions, or an array of functions. Passing multiple callbacks to done is nice if you want some stuff to happen asynchronously. If you have some things you want to do linearly, you can chain <code>.done()</code>&rsquo;s onto each other. ie: <code>$.when(animateSomething, animateSomethingElse).done(doThis).done(thenThis);</code></p>
+
+<p>So what is really going on when you use <code>.when()</code> and <code>.then()</code>? Well, <code>.when()</code> is waiting until the state of the promises passed to it (in our case we passed functions that <em>returned</em> promises) are all &lsquo;<code>resolved</code>&rsquo; (as opposed to &lsquo;pending&rsquo; or &lsquo;rejected&rsquo;). Once this happens, the <code>.done()</code> callbacks are fired. For a deeper understanding of promises (jQuery&rsquo;s implementation, specifically), check out the links below.</p>
+
+<p>I&rsquo;d like to write more technically about promises (and deferreds) in jQuery in the near future. They are especially powerful for managing AJAX transations. So stay tuned!</p>
+
+<h4>Resources</h4>
+
+<p>  <a href="http://blog.mediumequalsmessage.com/promise-deferred-objects-in-javascript-pt1-theory-and-semantics">http://blog.mediumequalsmessage.com/promise-deferred-objects-in-javascript-pt1-theory-and-semantics</a>
+  <a href="http://jquery-part2.codeschool.com/levels/6/challenges/1">http://jquery-part2.codeschool.com/levels/6/challenges/1</a>
+  <a href="https://www.youtube.com/watch?v=zD-JoRDk8ig">https://www.youtube.com/watch?v=zD-JoRDk8ig</a>
+  <a href="http://www.htmlgoodies.com/beyond/javascript/making-promises-with-jquery-deferred.html">http://www.htmlgoodies.com/beyond/javascript/making-promises-with-jquery-deferred.html</a>
+  <a href="http://api.jquery.com/deferred.promise/">http://api.jquery.com/deferred.promise/</a>
+  <a href="http://api.jquery.com/deferred.done/">http://api.jquery.com/deferred.done/</a></p>
 ]]></content>
   </entry>
   

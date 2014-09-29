@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Web Development | Jacob's Programming Explosions]]></title>
-  <link href="http://jbarrieault.github.io/blog/categories/web-development/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Callbacks | Jacob's Programming Explosions]]></title>
+  <link href="http://jbarrieault.github.io/blog/categories/callbacks/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
   <updated>2014-09-29T16:21:17-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
@@ -110,48 +110,6 @@ $('.div2').animate({'margin-left': '120px'})
   <a href="http://www.htmlgoodies.com/beyond/javascript/making-promises-with-jquery-deferred.html">http://www.htmlgoodies.com/beyond/javascript/making-promises-with-jquery-deferred.html</a>
   <a href="http://api.jquery.com/deferred.promise/">http://api.jquery.com/deferred.promise/</a>
   <a href="http://api.jquery.com/deferred.done/">http://api.jquery.com/deferred.done/</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Going, Going, Gon]]></title>
-    <link href="http://jbarrieault.github.io/blog/2014/08/15/going/"/>
-    <updated>2014-08-15T19:54:10-04:00</updated>
-    <id>http://jbarrieault.github.io/blog/2014/08/15/going</id>
-    <content type="html"><![CDATA[<p><em>This post is about passing variables from your rails controller to your javascript files.</em></p>
-
-<p>Recently, I was working on a rails project involving some javascript on the front end. Javascript is fun, so I was excited to get started on it. The feature was going to be a set of charts (using the chart.js library) populated with data relating to a group of users. It didn&rsquo;t take me long to figure out that while it is super easy to pass data from a controller to a view, I didn&rsquo;t actually know how to pass anything from my controllers to my javascript files. I tinkered around for a bit without any success. At one point I started to consider the ridiculous idea of firing an AJAX GET request back to my controller on page load using JQuery to get what I needed, since I already knew how to do that. But that felt really dirty, and I&rsquo;m a little embarrassed to even mention it.</p>
-
-<p>Then my friend Amy told me to use Gon.</p>
-
-<p>Gon? It&rsquo;s a sweet gem for passing variables from your rails controller to your javascript files. Just what I needed! Gon is incredibly easy to use. I&rsquo;ll show you.</p>
-
-<ol>
-<li><p>First, add Gon to your <code>Gemfile</code> (and run <code>bundle install</code>). Now add <code>&lt;%= include_gon %&gt;</code> in the <code>&lt;head&gt;&lt;/head&gt;</code> section of application.html.erb. Now you are ready to get down to business!</p></li>
-<li><p>In the appropriate controller and action, we&rsquo;re going to create a variable for the data you want to pass to the js file. Here I&rsquo;m in <code>groups_controller.rb</code> in the <code>show</code> action. This action is responsible for a single group&rsquo;s page (ie example.com/groups/3). This action renders /app/views/groups/show.html.erb, inside of which I include my javascript file via a <code>javascript_include_tag</code> (/app/assets/javascripts/groups_show.js). All you need to do is name your variable like so: <code>gon.your_variable_name</code>.</p></li>
-</ol>
-
-
-<p><code>groups_controller.rb</code>
-<code>ruby
-def show
-  @group = Group.find(params[:id])
-  gon.group_name = @group.name
-end
-</code></p>
-
-<ol>
-<li>That&rsquo;s it! <code>gon.group_name</code> is now available in my <code>groups_show.js</code> file.</li>
-</ol>
-
-
-<p><code>groups_show.js</code>
-<code>javascript
-var groupName = gon.group_name
-// That was really easy.
-</code></p>
-
-<p>As you can see, Gon is a super useful and easy way to pass data from you controllers to your javascript files.</p>
 ]]></content>
   </entry>
   
