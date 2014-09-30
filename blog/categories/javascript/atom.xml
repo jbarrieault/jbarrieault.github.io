@@ -4,7 +4,7 @@
   <title><![CDATA[Category: JavaScript | Jacob's Programming Explosions]]></title>
   <link href="http://jbarrieault.github.io/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://jbarrieault.github.io/"/>
-  <updated>2014-09-29T17:07:36-04:00</updated>
+  <updated>2014-09-30T08:35:23-04:00</updated>
   <id>http://jbarrieault.github.io/</id>
   <author>
     <name><![CDATA[Jacob Barrieault]]></name>
@@ -69,7 +69,7 @@ $(&lsquo;div&rsquo;).fadeIn(1000, function(){
 
 <h3>This is where promises save the day!<br/></h3>
 
-<p>Promises help us manage asynchronous operations and their callbacks. Let&rsquo;s me show an example based on my friend&rsquo;s problem. For this example we have a <code>&lt;button&gt;</code>, three <code>&lt;div&gt;</code>s and a <code>&lt;p&gt;</code>. When the user clicks the botton, we want to perform a unique animation for each of the <code>&lt;div&gt;</code>s (concurrently!). Once those are all done, we want to append the <code>&lt;p&gt;</code> to notify the user that they are awesome. To accomplish this, we are going to use jQuery&rsquo;s <code>.when()</code> and <code>.done()</code> functions. I&rsquo;ll explain more below, but for now, just note that jQuery&rsquo;s animations (as well as AJAX functions) return a promise.</p>
+<p>Promises help us manage asynchronous operations and their callbacks. Let&rsquo;s look at an example based on my friend&rsquo;s problem. For this example we have a <code>&lt;button&gt;</code>, three <code>&lt;div&gt;</code>s and a <code>&lt;p&gt;</code>. When the user clicks the botton, we want to perform a unique animation for each of the <code>&lt;div&gt;</code>s (concurrently!). Once those are all done, we want to append the <code>&lt;p&gt;</code> to notify the user that they are awesome. To accomplish this, we are going to use jQuery&rsquo;s <code>.when()</code> and <code>.done()</code> functions. I&rsquo;ll explain more below, but for now, just note that jQuery&rsquo;s animations (as well as AJAX functions) return a promise.</p>
 
 <p>```javascript
 $(&lsquo;button&rsquo;).click(function(){
